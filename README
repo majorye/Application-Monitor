@@ -1,0 +1,6 @@
+this is the Application log monitor, it will 
+work together with logger git, and solve the 
+log problem , especially for IE6-IE8.
+
+Note: put monitor.html under web project root folder.
+since this design for the project ,not for this demo.
