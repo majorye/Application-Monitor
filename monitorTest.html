@@ -111,9 +111,10 @@
  * time: 4/8/2012
  */
     jQuery(document).ready(function($) {
-      var mylog=ali.getLogger("logger-monitor-tester");
-      var int;
-      mylog.setEnableLevel(4);
+      var mylog=$.getLogger("logger-monitor-tester");
+      $.setLogLevel(4);
+	  //$.setLogLevel(-1);
+	  mylog.log("+++log test start+++");
       $(document).keydown(function(e) {
         if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
           mylog.log("log start++=");
