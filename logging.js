@@ -21,7 +21,8 @@ monitor to show the log .
      _log.level=level;
    };
    
-   var methods = [ "error", "warn", "info", "debug", "log"];//0-4 level
+   var methods = [ "error", "warn", "info", "debug", "log"];//0-4 level 
+   //log level not very clear compare with back-end  --log4j
    
    $.extend(_log.prototype, {
     /***
@@ -39,7 +40,7 @@ monitor to show the log .
           * @function
           */
 	 doFilter: function(log) {
-	   if(_log.filter && !log.test(_log.filter)) {
+	   if(_log.filter && !_log.filter.test(log[0]) && !_log.filter.test(this.name())) {
 	     return false
 	   }
 	   return true;
@@ -108,6 +109,9 @@ monitor to show the log .
     _log: function(level, msg) {
       if (this.enabled(level) && this.doFilter(msg)) {
          this._handler(level,this.name(),msg);
+		 if(_log.filter && (_log.filter.test(msg) || _log.filter.test(this.name()))){// if have filter action , do it
+		   _log.filterAction?_log.filterAction(msg):'';
+		 }
       }
     }
      
@@ -126,9 +130,17 @@ monitor to show the log .
 	 setLogLevel: function(level) {
 	   _log.level=level;
 	 },
-	 setLogFilter: function(filter) { // filter should be RegExp pattern
+	/**
+	 *  @param filter should be RegExp pattern
+	 *  @fct this is the call back function, it will pass the log message into
+	 *    the fct parameter as the first parameter. so user could do some action to process the log message , like
+	 *    send the message to the back-end or others.  etc: fct(message)
+	 */
+	 setLogFilter: function(filter,fct) {
 	   _log.filter=filter;
+	   fct?(_log.filterAction=fct):'';
 	 }
+	 
    });   
    
 })(jQuery);

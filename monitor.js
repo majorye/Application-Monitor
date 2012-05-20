@@ -1,6 +1,6 @@
 /**
  *@author   <a href="mailto:major.yezhouquan@gmail.com">Zhouquan.yezq</a>
- *@description  the monitor.js depend on the logging.js, that want to solve the log under ie6 etc lower browser do not show up.
+ *@description  the monitor.js depend on the logging.js, that want to solve the log under ie6 etc lower browser do not show up problem.
  */
 (function($) {
 
@@ -29,19 +29,17 @@
 	    }
     },
 	appendMessage: function(msg) {
-	    var w = childWin;
-	    if (!w || !window.childOpen) {
+	    if ( !window.childOpen) {
 	      this._openWindow();
-	      w = childWin;
 	    }
-	    if (w && w.appendMessage) {
-	      if (w.isFirstTime()) {
+	    if (childWin && childWin.appendMessage) {
+	      if (childWin.isFirstTime()) {
 	        var memory = $.getLogger().constructor.logPool;
 	        for (var i = 0; i < memory.length; i++) {
-	          w.appendMessage(memory[i]);
+	          childWin.appendMessage(memory[i]);
 	        }
 	      }
-	      w.appendMessage(msg);
+	      childWin.appendMessage(msg);
 	    }
     }
   };
