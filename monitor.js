@@ -5,15 +5,16 @@
 (function($) {
 
   //the monitor constructor and config
+  var childWin;
   var _m={
     MONITOR_PAGE: "monitor.html", //this html file ,you should put together with your project file.   
 	trunOn: false,
 	_openWindow: function() {
 	    var url = window.location.href;
 	    url = url.replace(window.location.pathname, '/' + this.MONITOR_PAGE);
-	    this._window = window.open(url, "Monitor_", "directories=no," + "location=no," + "menubar=no," + "status=yes," + "personalbar=no," + "titlebar=yes," + "toolbar=no," + "resizable=yes," + "scrollbars=no," + "width=500," + "height=400");
+	    childWin = window.open(url, "Monitor_", "directories=no," + "location=no," + "menubar=no," + "status=yes," + "personalbar=no," + "titlebar=yes," + "toolbar=no," + "resizable=yes," + "scrollbars=no," + "width=500," + "height=400");
 	    window.childOpen = true;
-	    if (this._window) {
+	    if (childWin) {
 	      window.focus();
 	    }
 	    window.onunload = this.UpdateChild;
@@ -21,16 +22,17 @@
 	UpdateChild: function() {
 	    //Only if child window is still open, set the parentOpen property
 	    if (window.childOpen == true) {
-	      //this._window.opener=null;
-	      //this._window.parentOpen = false
-	      //this._window.close();
+	      childWin.opener=null;
+	      childWin.parentOpen = false
+	      childWin.close();
+		  childWin=null;
 	    }
     },
 	appendMessage: function(msg) {
-	    var w = this._window;
+	    var w = childWin;
 	    if (!w || !window.childOpen) {
 	      this._openWindow();
-	      w = this._window;
+	      w = childWin;
 	    }
 	    if (w && w.appendMessage) {
 	      if (w.isFirstTime()) {
