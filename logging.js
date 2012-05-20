@@ -2,7 +2,7 @@
 *@class jQuery.getLogger
 *@name   jQuery.getLogger
 *@author   <a href="mailto:zhouquan.yezq@alibaba-inc.com">Zhouquan.yezq</a>
-*@description jQuery.getLogger will return a logger instance, and it already mask the console
+*@description jQuery.getLogger will return a logger instance, and it already solve the console
 *script issue on lower browser version like IE6. and for the IE6 or other lower version, we use the log
 monitor to show the log .
  <h2>How to use?<h2>
