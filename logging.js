@@ -40,7 +40,7 @@ monitor to show the log .
           * @function
           */
 	 doFilter: function(log) {
-	   if(_log.filter && !_log.filter.test(log[0]) && !_log.filter.test(this.name())) {
+	   if(_log.filter && _log.filter.test && !_log.filter.test(log[0]) && !_log.filter.test(this.name())) {
 	     return false
 	   }
 	   return true;
@@ -109,7 +109,7 @@ monitor to show the log .
     _log: function(level, msg) {
       if (this.enabled(level) && this.doFilter(msg)) {
          this._handler(level,this.name(),msg);
-		 if(_log.filter && (_log.filter.test(msg) || _log.filter.test(this.name()))){// if have filter action , do it
+		 if(_log.filter && _log.filter.test &&  (_log.filter.test(msg) || _log.filter.test(this.name()))){// if have filter action , do it
 		   _log.filterAction?_log.filterAction(msg):'';
 		 }
       }
