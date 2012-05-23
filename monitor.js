@@ -10,8 +10,9 @@
     MONITOR_PAGE: "monitor.html", //this html file ,you should put together with your project file.   
 	trunOn: false,
 	_openWindow: function() {
-	    var url = window.location.href;
-	    url = url.replace(window.location.pathname, '/' + this.MONITOR_PAGE);
+	    //var url = window.location.href;
+		var url=_m.MONITOR_PAGE;
+	    //url = url.replace(window.location.pathname, '/' + this.MONITOR_PAGE);
 	    childWin = window.open(url, "Monitor_", "directories=no," + "location=no," + "menubar=no," + "status=yes," + "personalbar=no," + "titlebar=yes," + "toolbar=no," + "resizable=yes," + "scrollbars=no," + "width=500," + "height=400");
 	    window.childOpen = true;
 	    if (childWin) {
@@ -20,7 +21,7 @@
 	    window.onunload = this.UpdateChild;
     },
 	UpdateChild: function() {
-	    //Only if child window is still open, set the parentOpen property
+	    //if parent win close, then close the child win
 	    if (window.childOpen == true) {
 	      childWin.opener=null;
 	      childWin.parentOpen = false
@@ -41,7 +42,11 @@
 	      }
 	      childWin.appendMessage(msg);
 	    }
-    }
+    },
+	
+    gc: function(){
+	   childWin=null;
+	 }
   };
  
   if($.getLogger){//if the log class exist, attend monitor to log prototype
