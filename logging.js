@@ -14,23 +14,23 @@ monitor to show the log .
 TODO: add setting for time stampe 
 */
 (function($){
-   //the _log constructor
+   //the log constructor
    
-   var _log=function(){};
-   _log.level=4; //default level, show all the log,if you want to close the log, just set log level as -1
-   _log.cacheSize=1000;
-   _log.policy=[]; // the filter policy center
+   var log=function(){};
+   log.level=4; //default level, show all the log,if you want to close the log, just set log level as -1
+   log.cacheSize=1000;
+   log.policy=[]; // the filter policy center
    
    var methods = [ "error", "warn", "info", "debug", "log"];//0-4 level 
    //log level not very clear compare with back-end  --log4j
    
-   $.extend(_log.prototype, {
+   $.extend(log.prototype, {
     /***
           *  @name jQuery.getLogger#enabled
           * @function
           */
      enabled: function(lev) {
-       if(lev>_log.level ) {
+       if(lev>log.level ) {
          return false;
        }
        return true;
@@ -41,11 +41,11 @@ TODO: add setting for time stampe
           *  if have more filters, from the console, it will show all the logs to the user, but it will do every filter call back for it's condiction
           * @function
           */
-	 doFilter: function(log) {
-	   if(!(_log.policy.length==1)) return true;
-	   var f=_log.policy[0];
+	 doFilter: function() {
+	   if(!(log.policy.length==1)) return true;
+	   var f=log.policy[0];
 	   f=f['fi'];
-	   if(f.test && !f.test(log[0]) && !f.test(this.name())) {
+	   if(f.test && !f.test(arguments[0][0]) && !f.test(this.name())) {
 	     return false
 	   }
 	   return true;
@@ -91,14 +91,14 @@ TODO: add setting for time stampe
      _handler: function(level, name, msg){
         var method=methods[level];
         msg=[[method,name+" |"].join(" | ")].concat(Array.prototype.slice.call(msg));
-             if(!_log.logPool){
-               _log.logPool=[];
+             if(!log.logPool){
+               log.logPool=[];
              }
-			 if(_log.logPool.length===_log.cacheSize){
+			 if(log.logPool.length===log.cacheSize){
 			    //if the cache log more than cacheSize , then remove the  previous first one.
-			    _log.logPool=_log.logPool.slice(1);
+			    log.logPool=log.logPool.slice(1);
 			 }
-             _log.logPool.push(msg.join(''));
+             log.logPool.push(msg.join(''));
              if( this.monitor && this.monitor.trunOn ){ //$.browser.msie   Just IE or not
                this.monitor.appendMessage(msg.join(''));
              }
@@ -114,9 +114,10 @@ TODO: add setting for time stampe
     _log: function(level, msg) {
       if (this.enabled(level) && this.doFilter(msg)) {
          this._handler(level,this.name(),msg);
-		 _log.policy.length>0?_log.policy.each(function(index,e) {  // do every filter and execute it's callback
+		 var me=this;
+		 log.policy.length>0?$.each(log.policy,function(index,e) {  // do every filter and execute it's callback
 		   var f=e['fi'];
-		   if(f && f.test &&  (f.test(msg) || f.test(this.name()))) {// if have filter action , do it
+		   if(f && f.test &&  (f.test(msg) || f.test(me.name()))) {// if have filter action , do it
 		     e['cb']? e['cb'](msg,window.location.href,( new Date() ).getTime()):'';
 		   }
 		 }):'';
@@ -129,15 +130,18 @@ TODO: add setting for time stampe
    var logs={};//logs container
    //extend this getLoggger method as jQuery method
    $.extend({
-     getLogger: function(name) {
+     Logger: function(name) {
        if (!logs[name]) {
-          logs[name] = new _log(name);
+          logs[name] = new log(name);
           logs[name]._name=name;
         }
         return logs[name];
-     },
+     }
+    });
+    $.extend($.Logger,{
+	// all the Logger configuratin will set under Logger 
 	 setLogLevel: function(level) {
-	   _log.level=level;
+	   log.level=level;
 	 },
 	/**
 	 *  @param filter should be RegExp pattern
@@ -151,19 +155,19 @@ TODO: add setting for time stampe
 	     'fi':filter
 	   };
 	   cb?(fool['cb']=cb):'';
-	   _log.policy.push(fool);
-	   //cb?(_log.filterAction=cb):'';
+	   log.policy.push(fool);
+	   //cb?(log.filterAction=cb):'';
 	 },
 	 
 	 /**
 	 * setting the Monitor page url. Note: we should keep the target page and monior page  under same domain.
 	 */
 	 setMonitorPage: function(url) {
-	   _log.monitor?(_log.monitor.MONITOR_PAGE)=url:'';
+	   log.monitor?(log.monitor.MONITOR_PAGE)=url:'';
 	 },
 	 
-	 gc: function(){ //should parent level call it
-	   _log=null;
+	 gc: function() { //should parent level call it
+	   log=null;
 	 }
 	 
    });   

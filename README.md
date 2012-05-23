@@ -24,15 +24,15 @@ jQuery PlugIn, 简单，易用
 
 ## 目前API
 
-- jQuery.getLogger
-- jQuery.setLogLevel
-- jQuery.setLogFilter
+- $.Logger
+- $.Logger.setLogLevel
+- $.Logger.setLogFilter
 
 ## 使用示例
 
-- var mylog=$.getLogger("logger-monitor-tester");
-- $.setLogLevel(4);  // logger-monitor-tester
-- $.setLogFilter(/^.*monitor.*$/,function(msg){
+- var mylog=$.Logger("logger-monitor-tester");
+- $.Logger.setLogLevel(4);  // logger-monitor-tester
+- $.Logger.setLogFilter(/^.*monitor.*$/,function(msg){
 -  //do the action , like send request to the back-end or store the log in some place
 - });
 

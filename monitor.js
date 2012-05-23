@@ -35,7 +35,7 @@
 	    }
 	    if (childWin && childWin.appendMessage) {
 	      if (childWin.isFirstTime()) {
-	        var memory = $.getLogger().constructor.logPool;
+	        var memory = $.Logger().constructor.logPool;
 	        for (var i = 0; i < memory.length; i++) {
 	          childWin.appendMessage(memory[i]);
 	        }
@@ -49,9 +49,9 @@
 	 }
   };
  
-  if($.getLogger){//if the log class exist, attend monitor to log prototype
+  if($.Logger) {//if the log class exist, attend monitor to log prototype
 	  window.childOpen = false;
-	  var logPro=$.getLogger().constructor.prototype;
+	  var logPro=$.Logger().constructor.prototype;
 	  logPro.monitor=_m;
 	  $(document).keydown(function(e) {
 	    if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
