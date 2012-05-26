@@ -7,7 +7,7 @@
 monitor to show the log .
  <h2>How to use?<h2>
 <pre>
-  var mylog=jQuery.getLogger('com.company.project.moduleName');
+  var mylog=jQuery.Logger('com.company.project.moduleName');
   mylog.log('this is the log');
 </pre>
 
@@ -101,7 +101,9 @@ TODO: add setting for time stampe
              log.logPool.push(msg.join(''));
              if( this.monitor && this.monitor.trunOn ){ //$.browser.msie   Just IE or not
                this.monitor.appendMessage(msg.join(''));
-             }
+             }else if(!this.monitor){
+			   outputProcessor(msg.join(''));
+			 }
        if(self.console && self.console.error) {
            if(console.log.apply) {//IE8 do not work on this way. undefined
               console[method].apply(console, msg);       
@@ -159,7 +161,7 @@ TODO: add setting for time stampe
 	   //cb?(log.filterAction=cb):'';
 	 },
 	 
-	 /**
+	/**
 	 * setting the Monitor page url. Note: we should keep the target page and monior page  under same domain.
 	 */
 	 setMonitorPage: function(url) {
@@ -170,6 +172,77 @@ TODO: add setting for time stampe
 	   log=null;
 	 }
 	 
-   });   
+   });
+    
+	function outputProcessor(msg){
+		if($('#loggingContainer20120526').length==0){
+		  var tpl=["<div id='loggingContainer20120526' style='display:none;clear:left;position:absolute;font-size:11px;right:0px;top:0px;width:350px;",
+	      "color:#000000;font-family:Monaco, Courier, monospace;z-index:1;border:2px solid #444;'>",
+		  "<div id='loggingheader20120526' style='width:100%;height:25px;background-color:#000;'><strong style='float:right;cursor:pointer;color:#FFF;margin-right:5px;' id='loggingclosebtn20120526'>X</strong></div>",
+	      "<div id='logging20120526' style='position:relative;background-color:#FFF;font-size:11px;color:#000000;",
+	      "text-align:left;padding: 19px 4px 2px 4px;width:340px;height:400px;overflow-y:scroll;'>",
+	      "</div></div>"].join('');
+		    $(document.body).append(tpl);
+			$('#loggingheader20120526').dblclick(function(){
+			   var t=$('#logging20120526');
+			   t.css('display')=='block'?t.hide():t.show();
+			});
+			$('#loggingclosebtn20120526').click(function(){
+			  $('#loggingContainer20120526').hide();
+			});
+		    $(document).keydown(function(e) {
+			    if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
+				      $('#loggingContainer20120526').show();
+				      $.use('ui-dialog', function(){
+		              var d = $('#loggingContainer20120526',"#demo2");
+					  d.dialog( {
+					        modal: false,
+					        shim: true,
+							draggable:true,
+							 css: {
+						            right: 10,
+						            top:  10
+						    }
+							/*(css:{
+							  right:100,
+							  top:100,
+							  position:'absolute'
+							}*/
+							});
+		             });
+
+			    }
+		    });
+		}
+		appendMessage(msg);
+	};
+	
+	function appendMessage(strMessage){
+        var logLevel=strMessage.split('|')[0];
+        //var methods = [ "error", "warn", "info", "debug", "log"];
+        var color="";
+        switch (logLevel)
+        {
+          case 'error ':
+            color='color:#990000;';
+            break;
+          case 'warn ':
+            color='color:#996600;';
+            break;
+          case 'info ':
+            color='color:#000000;';
+            break;
+          case 'debug ':
+           color='color:#444444;';
+           break;
+          case 'log ':
+           color='color:#888888;';
+           break; 
+        }
+        this._hasappendedmsg = true;
+		//TODO add object parse processor, right now all the thing, just treat it as text.
+        $('#logging20120526').append('<pre style="'+color+' line-height:10px;height:10px;">'+strMessage+'</pre>');
+	};
+ 
    
 })(jQuery);
