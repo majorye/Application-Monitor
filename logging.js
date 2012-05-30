@@ -192,7 +192,7 @@ TODO: add setting for time stampe
 		  "<span style='margin:8px 5px;float:right;width:10px;height:10px;line-height:25px;background-color:#bfbfbf;' class='bgcolor' data-bgcolor='#bfbfbf'></span>",
 		  "</div>",
 	      "<div id='logging20120526' style='position:relative;background-color:#FFF;font-size:11px;color:#000000;",
-	      "text-align:left;padding: 19px 4px 2px 4px;width:340px;height:400px;overflow-y:scroll;'>",
+	      "text-align:left;padding: 19px 4px 2px 4px;width:340px;height:400px;overflow-y:auto;overflow-x:auto;'>",
 	      "</div></div></div>"].join('');
 		    $(document.body).append(tpl);
 			$('#loggingheader20120526').dblclick(function(){
@@ -218,8 +218,8 @@ TODO: add setting for time stampe
 							  handle:'#loggingheader20120526'
 							},
 							 css: {
-						        left: event.clientX?(event.clientX +100):600,
-		                        top: event.clientY? (event.clientY+100):100
+						        left: e.clientX?(e.clientX +100):600,
+		                        top: e.clientY? (e.clientY+100):100
 						    }
 							});
 		             });
@@ -258,7 +258,7 @@ TODO: add setting for time stampe
         }
         this._hasappendedmsg = true;
 		//TODO add object parse processor, right now all the thing, just treat it as text.
-         $('#logging20120526').append('<pre style="'+color+' line-height:10px;height:10px;">'+strMessage+'</pre>');
+         $('#logging20120526').append('<pre style="'+color+' ">'+strMessage+'</pre>');
 	};
    //jQuery(function($) {
    //  outputProcessor('');
