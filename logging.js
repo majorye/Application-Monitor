@@ -98,7 +98,9 @@ TODO: add setting for time stampe
 			    //if the cache log more than cacheSize , then remove the  previous first one.
 			    log.logPool=log.logPool.slice(1);
 			 }
-             log.logPool.push(msg.join(''));
+			 if(!(outputProcessor.turnOn || (this.monitor && this.monitor.trunOn))){
+			    log.logPool.push(msg.join(''));
+			 }
              if( this.monitor && this.monitor.trunOn ){ //$.browser.msie   Just IE or not
                this.monitor.appendMessage(msg.join(''));
              }else if(!this.monitor){
@@ -176,45 +178,59 @@ TODO: add setting for time stampe
     
 	function outputProcessor(msg){
 		if($('#loggingContainer20120526').length==0){
-		  var tpl=["<div id='loggingContainer20120526' style='display:none;clear:left;position:absolute;font-size:11px;right:0px;top:0px;width:350px;",
-	      "color:#000000;font-family:Monaco, Courier, monospace;z-index:1;border:2px solid #444;'>",
-		  "<div id='loggingheader20120526' style='width:100%;height:25px;background-color:#000;'><strong style='float:right;cursor:pointer;color:#FFF;margin-right:5px;' id='loggingclosebtn20120526'>X</strong></div>",
+		  var tpl=["<div id='myc'><div id='loggingContainer20120526' style='display:none;clear:left;position:absolute;font-size:11px;right:0px;top:0px;width:350px;",
+	      "color:#000;font-family:Monaco, Courier, monospace;z-index:1;border:2px solid #444;'>",
+		  "<div id='loggingheader20120526' style='width:100%;height:25px;line-height:25px;background-color:#000;cursor:pointer;text-align:left;color:#FFF;bold-weight:bold;'>",
+		  "<span style='float:left;'>Application Log Monitor</span>",
+		  "<span style='float:right;cursor:pointer;color:#FFF;margin-right:5px;'><strong  id='loggingclosebtn20120526'>X</strong></span>",
+		  "<span style='float:right;width:10px;height:10px;line-height:25px;background-color:yellow;margin:5px 5px;' class='bgcolor' data-bgcolor='yellow'></span>",
+		  "<span style='margin:5px 5px;float:right;width:10px;height:10px;line-height:25px;background-color:pink;' class='bgcolor' data-bgcolor='pink'></span>",
+		  "<span style='margin:5px 5px;float:right;width:10px;height:10px;line-height:25px;background-color:#fcf9a4;' class='bgcolor' data-bgcolor='#fcf9a4'></span>",
+		  "<span style='margin:5px 5px;float:right;width:10px;height:10px;line-height:25px;background-color:#00bf00;' class='bgcolor' data-bgcolor='#00bf00''></span>",
+		  "<span style='margin:5px 5px;float:right;width:10px;height:10px;line-height:25px;background-color:#b4d3f2;' class='bgcolor' data-bgcolor='#b4d3f2''></span>",
+		  "<span style='margin:5px 5px;float:right;width:10px;height:10px;line-height:25px;background-color:#bfbfbf;' class='bgcolor' data-bgcolor='#bfbfbf'></span>",
+		  "</div>",
 	      "<div id='logging20120526' style='position:relative;background-color:#FFF;font-size:11px;color:#000000;",
 	      "text-align:left;padding: 19px 4px 2px 4px;width:340px;height:400px;overflow-y:scroll;'>",
-	      "</div></div>"].join('');
+	      "</div></div></div>"].join('');
 		    $(document.body).append(tpl);
 			$('#loggingheader20120526').dblclick(function(){
 			   var t=$('#logging20120526');
 			   t.css('display')=='block'?t.hide():t.show();
 			});
+			$('#loggingheader20120526').delegate('.bgcolor','click',function(){
+			  $('#logging20120526').css('background-color',$(this).data('bgcolor'));
+			})
 			$('#loggingclosebtn20120526').click(function(){
 			  $('#loggingContainer20120526').hide();
 			});
 		    $(document).keydown(function(e) {
 			    if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
 				      $('#loggingContainer20120526').show();
-				      $.use('ui-dialog', function(){
-		              var d = $('#loggingContainer20120526',"#demo2");
+					  outputProcessor.turnOn=true;
+				      $.use('ui-core,ui-draggable,ui-dialog', function(){
+		              var d = $('#loggingContainer20120526',"#myc");
 					  d.dialog( {
 					        modal: false,
 					        shim: true,
-							draggable:true,
+							draggable:{
+							  handle:'#loggingheader20120526'
+							},
 							 css: {
-						            right: 10,
-						            top:  10
+						        left: event.clientX?(event.clientX +100):600,
+		                        top: event.clientY? (event.clientY+100):100
 						    }
-							/*(css:{
-							  right:100,
-							  top:100,
-							  position:'absolute'
-							}*/
 							});
 		             });
 
 			    }
 		    });
 		}
-		appendMessage(msg);
+	     $.each(log.logPool,function(index,e){
+		   appendMessage(e);
+		 });
+		 log.logPool=[];
+		 appendMessage(msg);
 	};
 	
 	function appendMessage(strMessage){
@@ -241,8 +257,10 @@ TODO: add setting for time stampe
         }
         this._hasappendedmsg = true;
 		//TODO add object parse processor, right now all the thing, just treat it as text.
-        $('#logging20120526').append('<pre style="'+color+' line-height:10px;height:10px;">'+strMessage+'</pre>');
+         $('#logging20120526').append('<pre style="'+color+' line-height:10px;height:10px;">'+strMessage+'</pre>');
 	};
- 
-   
+   //jQuery(function($) {
+   //  outputProcessor('');
+   //});
 })(jQuery);
+
