@@ -127,9 +127,43 @@ TODO: add setting for time stampe
 		 }):'';
 		 
       }
-    }
+    },
+	printWrapError: function(e) {
+       var e=new NativeError(e);
+	   var msg=e.getType()+" happen at "+e.getLineNumber()+"line \nCaused By:\n"+e.getMessage();
+	   this.error(msg);
+	}
      
    });
+   
+   /**Native Error Class**/
+   var NativeError=function(e) {this._error=e;};
+   NativeError.prototype.getType=function() {
+		if (this._error instanceof EvalError) return "EvalError";
+		if (this._error instanceof RangeError) return "RangeError";
+		if (this._error instanceof ReferenceError) return "ReferenceError";
+		if (this._error instanceof SyntaxError) return "SyntaxError";
+		if (this._error instanceof TypeError) return "TypeError";
+		return "Error";
+   }
+   NativeError.prototype.getMessage = function() {
+    return (this._error.message || this._error.toString()).replace(/\s*$/,"");
+   };
+   NativeError.prototype.getLineNumber = function() {
+	if ($.browser.safari) {
+		return this._error.line;
+	} else {
+	    var line=this._error.lineNumber;
+	    if(line == null || line === "" || isNaN(line)){
+		  return null;
+		}
+		if($.browser.msie){
+		  return line - 1;
+		}else{
+		  return line;
+		}
+	}
+  };
    
    var logs={};//logs container
    //extend this getLoggger method as jQuery method

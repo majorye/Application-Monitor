@@ -2,9 +2,12 @@
 <html>
 <head>
     <title></title>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script-->
+     <script type="text/javascript" src="http://style.china.alibaba.com/fdevlib/js/fdev-v4/core/fdev-min.js"></script>
+    <!--script type="text/javascript" src="http://style.china.alibaba.com/js/lib/fdev-v4/core/fdev-min.js"></script-->
+
     <script type="text/javascript" src="logging.js"></script>
-    <script type="text/javascript" src="monitor.js"></script>
+    <!--script type="text/javascript" src="monitor.js"></script-->
     <style type="text/css">
     .cirBorder{
       -webkit-border-radius: 6px;
@@ -118,33 +121,40 @@
 	  });
 	  //$.setLogLevel(-1);
       //var mylog2=$.Logger("logger-monitor-tester22");
+	  
 	  mylog.log("+++log test start+++");
+	  
 	  //mylog2.log("+++log22 test start+++");
       $(document).keydown(function(e) {
-        if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
-          mylog.log("log start++=");
-          int=self.setInterval(function(){
-             var logType=$.now().toString().slice(-1);
-             switch (logType)
-             {
-                case '1':
-                  mylog.info("####"+$.now()+"####");
-                  break;
-                case '2':
-                  mylog.warn("####"+$.now()+"####");
-                  break;
-                case '3':
-                  mylog.debug("####"+$.now()+"####");
-                  break;
-                case '4':
-                  mylog.error("####"+$.now()+"####");
-                  break;
-                default:
-                  mylog.log("####"+$.now()+"####");
-             }
-             
-          },500);
-        }
+	        if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
+	          mylog.log("log start++=");
+	          int=self.setInterval(function() {
+	             var logType=$.now().toString().slice(-1);
+				 try{
+		             switch (logType)
+		             {
+		                case '1':
+		                  mylog.info("####"+$.now()+":"+$.now()+"####");
+		                  break;
+		                case '2':
+		                  mylog.warn("####"+$.now()+":"+$.now()+"####");
+		                  break;
+		                case '3':
+		                  mylog.debug("####"+$.now()+":"+$.now()+"####");
+		                  break;
+		                case '4':
+		                  mylog.error("####"+$.now()+":"+$.now()+"####");
+		                  break;
+		                default:
+		                  mylog.log("####"+$.now()+":"+$.now()+"####");
+		             }
+		             //throw new Error('this is the my code error'+$.now());
+					 throw new SyntaxError( "SyntaxError! ");
+				 }catch(ex){
+				   mylog.printWrapError(ex);
+				 } 
+	          },500);
+	        }
 
         if (e.altKey && e.keyCode == 68) { //ctrl+d
           int=window.clearInterval(int);
