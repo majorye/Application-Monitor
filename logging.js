@@ -4,15 +4,36 @@
 *@author   <a href="mailto:zhouquan.yezq@alibaba-inc.com">Zhouquan.yezq</a>
 *@description jQuery.getLogger will return a logger instance, and it already solve the console
 *script issue on lower browser version like IE6. and for the IE6 or other lower version, we use the log
-monitor to show the log .
- <h2>How to use?<h2>
+monitor to show the log ..
+
+
+ <h2>Feature 1: module log instance<h2>
 <pre>
   var mylog=jQuery.Logger('com.company.project.moduleName');
   mylog.log('this is the log');
+  
+   mylog=jQuery.Logger('com.company.project.moduleName2');
+  mylog.log('this is the log');
 </pre>
 
-TODO: add setting for time stampe 
+ <h2>Feature 2: condition error call back:</h2>
+ <pre>
+	  $.Logger.setLogFilter(/^CONDITION$/,function(msg,url, time){
+	    //todo, send request to back-end . etc
+	  });
+</pre> 
+ <h2>Feature 3:  output try /catch error :</h2>
+  <pre>
+	try{
+		   ...
+	}catch(ex){
+		mylog.printWrapError(ex);
+	} 
+</pre>
+ <h2>Feature 4:  Inline monitor panel: shift+Alt+Alt+L</h2>
+ <h2>Feature 5:  Close the log feature on line: set log level as -1</h2>
 */
+
 (function($){
    //the log constructor
    
@@ -212,7 +233,7 @@ TODO: add setting for time stampe
     
 	function outputProcessor(msg){
 		if($('#loggingContainer20120526').length==0){
-		  var tpl=["<div id='myc'><div id='loggingContainer20120526' style='display:none;clear:left;position:absolute;font-size:11px;right:0px;top:0px;width:350px;",
+		  var tpl=["<div id='myc'><div id='loggingContainer20120526' style='display:none;clear:left;position:absolute;font-size:11px;top:0px;right:0px;width:350px;",
 	      "color:#000;font-family:Monaco, Courier, monospace;z-index:1;border:2px solid #444;'>",
 		  "<div id='loggingheader20120526' style='width:100%;height:25px;line-height:25px;background-color:#000;cursor:pointer;text-align:left;color:#FFF;bold-weight:bold;'>",
 		  "<span style='float:left;'>Application Log Monitor</span>",
@@ -243,21 +264,26 @@ TODO: add setting for time stampe
 			    if (e.ctrlKey && e.altKey && e.keyCode == 76) { //ctrl+alt+l
 				      $('#loggingContainer20120526').show();
 					  outputProcessor.turnOn=true;
-				      $.use('ui-core,ui-draggable,ui-dialog', function(){
-		              var d = $('#loggingContainer20120526',"#myc");
-					  d.dialog( {
-					        modal: false,
-					        shim: true,
-							draggable:{
-							  handle:'#loggingheader20120526'
-							},
-							 css: {
-						        left: e.clientX?(e.clientX +100):600,
-		                        top: e.clientY? (e.clientY+100):100
-						    }
-							});
-		             });
-
+					  if($.use){
+					      $.use('ui-core,ui-draggable,ui-dialog', function(){
+			              var d = $('#loggingContainer20120526',"#myc");
+						  d.dialog( {
+						        modal: false,
+						        shim: true,
+								draggable:{
+								  handle:'#loggingheader20120526'
+								},
+								 css: {
+							        left: e.clientX?(e.clientX +100):600,
+			                        top: e.clientY? (e.clientY+100):100
+							    }
+								});
+			             });
+					 }else if($( "#myc" ).draggable){
+					   $( "#myc" ).draggable();
+					 }else{
+					   alert('please import the jquery-ui js');
+					 }
 			    }
 		    });
 		}
